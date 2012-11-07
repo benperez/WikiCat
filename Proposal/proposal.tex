@@ -96,6 +96,10 @@ Finally if time allows and our techniques are robust enough we plan to make our 
 	\label{fig:block_diagram}
 \end{figure*}
 
+\subsection{Technical Challenges}
+\label{subsec:tech_challenges}
+The main technical challenges that we anticipate are related to the scale of existing Wikipedia category data. The extremely large number of categories and pages will make efficiently representing the graph in terms of memory a possible challenge. Another issue that arises from the large scale of Wikipidia data is the need for algorithms that are efficient in terms of runtime. 
+
 \subsection{Evaluation Criteria}
 \label{subsec:eval_criteria}
 Evaluation of our results may be broken down into two cases: How do you know when the tool is suggesting a bad categorization and how do you know when it is suggesting a good categorization? To check that our technique is not suggesting bad links, we take the unseen portion of the labeled data which we set aside earlier and test against that. Along with testing on the labeled data, we can check that the tool is suggesting good categorizations by running the graph based-approach over an unlabeled sample with several categorizations removed and check that our algorithm recommends these missing edges with a high probability. Both of these metrics will be part of the experimental "feature-determination" portion of our project. Finally, if we tie our system into a browser then there is the potential to collect user feedback on how our tool perfroms "in the wild", although that is further down the road. A similar approach to evaluation is taken by Sunercan et al.  to evaluate the effectiveness of suggested hyperlinks between pages~\cite{Sunercan}.
@@ -110,7 +114,6 @@ Evaluation of our results may be broken down into two cases: How do you know whe
 	\item {\sc By Late March}: Have determined a minimal set of useful features and continue testing. Begin organizing ideas for final writeups and work on integration with Hotcat if there is time.\vspace{3pt}
 	\item {\sc Final Tasks}: Finish the project writeup and Complete integration with Hotcat. Try to get Wikipedia editors to try the tool out. Collect feedback from editors and incorporate it into conclusion of writeup.
 \end{itemize*}
-\newpage
 
 	% AW: We next move onto the bibliography.
 \bibliographystyle{plain} % Please do not change the bib-style
