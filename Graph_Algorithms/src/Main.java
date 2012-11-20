@@ -40,21 +40,21 @@ public class Main
 				if (counts.containsKey(c))
 					counts.put(c, counts.get(c)+1);
 				else
-					counts.put(c, 0);
+					counts.put(c, 1);
 			}
 			for (Category c : walk2)
 			{
 				if (counts.containsKey(c))
 					counts.put(c, counts.get(c)+1);
 				else
-					counts.put(c, 0);
+					counts.put(c, 1);
 			}
 			for (Category c : walk3)
 			{
 				if (counts.containsKey(c))
 					counts.put(c, counts.get(c)+1);
 				else
-					counts.put(c, 0);
+					counts.put(c, 1);
 			}
 		}
 		
