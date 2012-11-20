@@ -1,4 +1,17 @@
+import java.util.HashSet;
 
-public class PageManager {
-
+/**
+ * Page Manager, links the SQL database to our java framework
+ * 
+ *
+ */
+public class PageManager 
+{
+	HashSet<Page> Pages;
+	
+	public HashSet<Page> getOutgoingLinks()
+	{
+		//TODO
+		return null;
+	}
 }

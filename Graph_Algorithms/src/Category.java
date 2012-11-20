@@ -4,6 +4,7 @@
  * 
  * 
  **/
-public class Category {
+public class Category 
+{
 	
 }
