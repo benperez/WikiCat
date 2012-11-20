@@ -2,6 +2,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -13,8 +15,8 @@ import java.util.HashSet;
 public class Page 
 {
 	int pageId;
-	HashMap<Page,Double> TransitionProbabilities;
-	HashSet<Category> Categories;
+	Map<Page,Double> TransitionProbabilities;
+	Set<Category> Categories;
 	
 	/**
 	 * Constructor for a page, maybe called by Page Manager
@@ -33,7 +35,7 @@ public class Page
 	 * @param outgoingLinks The set of all pages linked to
 	 * @return a mapping of N hyperlinked pages each with 1/N probability
 	 */
-	private HashMap<Page,Double> makeUniformProbabilities(HashSet<Page> outgoingLinks)
+	private HashMap<Page,Double> makeUniformProbabilities(Set<Page> outgoingLinks)
 	{
 		HashMap<Page, Double> probabilities = new HashMap<Page, Double>();
 		Double uniform = new Double(1.0/outgoingLinks.size());
@@ -49,14 +51,15 @@ public class Page
 	 * 
 	 * @return map of Page to its associated transition probability
 	 */
-	public HashMap<Page,Double> getTransitionProbabilites()
+	public Map<Page,Double> getTransitionProbabilites()
 	{
-		//If the TransitionProbabilies for this page have not yet been loaded, then query them
+		//Load Transition Probabilities if needed
 		if (TransitionProbabilities == null)
 		{
-			//TODO - load shit from PageManager
-			String query = "Select ";
-			
+			//PageManager handles lazy loading of neighbors
+			Set<Page> outgoing = PageManager.getOutgoingLinks(this);
+			//For now, just using uniform probabilities across all outgoing links
+			TransitionProbabilities = makeUniformProbabilities(outgoing);
 			return TransitionProbabilities;
 		} else
 		{
@@ -69,7 +72,7 @@ public class Page
 	 * 
 	 * @return set of Category labels associated with this page
 	 */
-	public HashSet<Category> getCategories()
+	public Set<Category> getCategories()
 	{
 		//Load Categories if needed
 		if (Categories == null)
