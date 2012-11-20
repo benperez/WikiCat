@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 
-public class DBManager {
+public class DBManager 
+{
 
 	//Database Authentication
 	private static final String DB_ADDRESS = "jdbc:mysql://localhost/wiki_category";
