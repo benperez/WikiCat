@@ -73,7 +73,7 @@ public class Page
 		if (Categories == null)
 		{
 			//Todo = load shit from PageManager
-			
+			String query = "Select cl_from from categorylinks where";
 			return Categories;
 		} else
 		{
