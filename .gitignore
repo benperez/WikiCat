@@ -6,3 +6,4 @@ proposal.ps
 *.blg
 .D*
 *~
+*.class
