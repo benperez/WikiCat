@@ -3,7 +3,7 @@ import java.util.HashSet;
 /**
  * Page Manager, links the SQL database to our java framework
  * 
- * TODO--- need to figure out how this is going to work. ideally want some sort of lazy loading of pages
+ * Works by lazy loading pages from the database only when requested. Additionally, pages are cached and never loaded a second time.
  */
 public class PageManager 
 {
@@ -13,7 +13,11 @@ public class PageManager
 	//Static initialization block, going to want to open a connection to the database
 	static 
 	{
-		;
+		//Initialize the JDBC connector
+		//TODO
+		
+		//Instantiate the empty set of pages
+		loadedPages = new HashSet<Page>();
 	}
 	
 	/**
