@@ -10,20 +10,18 @@ import java.util.HashSet;
  **/
 public class Page 
 {
+	int pageId;
 	HashMap<Page,Double> TransitionProbabilities;
 	HashSet<Category> Categories;
 	
 	/**
 	 * Constructor for a page, maybe called by Page Manager
 	 * 
-	 * @param outgoingLinks All hyperlinks to other Wikipedia Pages
-	 * @param Categories All categories which apply to this specific page
+	 * @param pageId the row-key ID associated with this page
 	 */
-	public Page(HashSet<Page> outgoingLinks, HashSet<Category> Categories)
+	public Page(int pageId)
 	{
-		//For now, just create a uniform distribution over outgoing links
-		this.TransitionProbabilities = makeUniformProbabilities(outgoingLinks);
-		this.Categories = Categories;
+		this.pageId = pageId;
 	}
 	
 	
@@ -51,7 +49,17 @@ public class Page
 	 */
 	public HashMap<Page,Double> getTransitionProbabilites()
 	{
-		return TransitionProbabilities;
+		//If the TransitionProbabilies for this page have not yet been loaded, then query them
+		if (TransitionProbabilities == null)
+		{
+			//TODO - load shit from PageManager
+			String query = "Select ";
+			
+			return TransitionProbabilities;
+		} else
+		{
+			return TransitionProbabilities;
+		}
 	}
 	
 	/**
@@ -61,6 +69,15 @@ public class Page
 	 */
 	public HashSet<Category> getCategories()
 	{
-		return Categories;
+		//Load Categories if needed
+		if (Categories == null)
+		{
+			//Todo = load shit from PageManager
+			
+			return Categories;
+		} else
+		{
+			return Categories;
+		}	
 	}
 }
