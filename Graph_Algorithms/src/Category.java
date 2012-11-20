@@ -3,10 +3,7 @@
  * 
  * 
  * 
- * 
- * 
- * 
  **/
 public class Category {
-
+	
 }
