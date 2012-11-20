@@ -22,6 +22,7 @@ public class Main
 		Page dog = new Page(dogID);
 		
 		Map<Category, Integer> counts = new HashMap<Category, Integer>();
+		Walker jackson = new Walker(dog);
 		Set<Category> walk1;
 		Set<Category> walk2;
 		Set<Category> walk3;
@@ -29,7 +30,38 @@ public class Main
 		for (int i=0; i<10; i++)
 		{
 			//Do a walk of depth 1,2,3,...
+			walk1 = jackson.walk(1);
+			walk2 = jackson.walk(2);
+			walk3 = jackson.walk(3);
 			
+			//Increment the counts
+			for (Category c : walk1)
+			{
+				if (counts.containsKey(c))
+					counts.put(c, counts.get(c)+1);
+				else
+					counts.put(c, 0);
+			}
+			for (Category c : walk2)
+			{
+				if (counts.containsKey(c))
+					counts.put(c, counts.get(c)+1);
+				else
+					counts.put(c, 0);
+			}
+			for (Category c : walk3)
+			{
+				if (counts.containsKey(c))
+					counts.put(c, counts.get(c)+1);
+				else
+					counts.put(c, 0);
+			}
+		}
+		
+		double n = (double) counts.size();
+		for (Category c : counts.keySet())
+		{
+			System.out.println(c.getName()+": "+( (double) counts.get(c))/n);
 		}
 	}
 	
