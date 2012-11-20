@@ -1,3 +1,5 @@
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -45,7 +47,7 @@ public class Page
 	/**
 	 * Getter method for transition probabilities of this page
 	 * 
-	 * @return map of Page to it's associated transition probability
+	 * @return map of Page to its associated transition probability
 	 */
 	public HashMap<Page,Double> getTransitionProbabilites()
 	{
@@ -72,10 +74,26 @@ public class Page
 		//Load Categories if needed
 		if (Categories == null)
 		{
-			//Todo = load shit from PageManager
-			String query =	"Select cl_to" +
+			String query =	"Select cl_to as Cat" +
 							"from categorylinks" +
 							"where cl_from = "+Integer.toString(pageId)+";";
+			ResultSet rs = DBManager.query(query);
+			Categories = new HashSet<Category>();
+			if (rs != null)
+			{
+				try 
+				{
+					while(rs.next())
+					{
+						String catName = rs.getString("Cat");
+						Category temp = new Category(catName);
+						Categories.add(temp);
+					}
+				} catch (SQLException e)
+				{
+					e.printStackTrace();
+				}
+			} 
 			return Categories;
 		} else
 		{
