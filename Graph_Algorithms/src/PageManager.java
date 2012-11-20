@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,12 +30,34 @@ public class PageManager
 	/**
 	 * Retrieves a set of all pages cross-linked from the provided page.
 	 * @param page The Page to get outgoing neighbors for.
+	 * @return A set of pages linked to or null if an error occurred.
 	 */
 	public static Set<Page> getOutgoingLinks(Page page)
 	{
-		//String query
-		//DBManager.query(query);
-		return null;
+		//Run a query to get the page ids linked to by the given one
+		String query = "SELECT P.page_id as id FROM pagelinks as PL, page as P WHERE PL.pl_from="+page.pageId+" AND PL.title=P.page_title;";
+		ResultSet rs = DBManager.query(query);
+		if (rs==null){
+			return null;
+		}
+		
+		//Populate the return set of pages
+		Set<Page> pages = new HashSet<Page>();
+		try
+		{
+			while(rs.next())
+			{
+				pages.add( getPageFromId(rs.getInt("id")) );
+			}
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error executing outgoing link query!");
+			e.printStackTrace();
+			return null;
+		}
+		
+		return pages;
 	}
 	
 	
