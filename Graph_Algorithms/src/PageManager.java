@@ -32,7 +32,8 @@ public class PageManager
 	public static Set<Page> getOutgoingLinks(Page page)
 	{
 		//Run a query to get the page ids linked to by the given one
-		String query = "SELECT P.page_id as id FROM pagelinks as PL, page as P WHERE PL.pl_from="+page.pageId+" AND PL.title=P.page_title;";
+		//TODO Do some more sanity checking to make sure we're getting good pages
+		String query = "SELECT P.page_id as id FROM pagelinks as PL, page as P WHERE P.page_namespace=0 AND PL.pl_from="+page.pageId+" AND PL.title=P.page_title;";
 		ResultSet rs = DBManager.query(query);
 		if (rs==null){
 			return null;
@@ -66,13 +67,13 @@ public class PageManager
 	private static Page getPageFromId(int id) {
 		//See if we have the page cached
 		Page page = loadedPages.get(id);
-		if (page!=null)
+		if (page==null)
 		{
-			return page;
+			//If not, go ahead and build then cache it
+			page = new Page(id);
+			loadedPages.put(id, page);
 		}
-		//Otherwise, go ahead and build it then cache it
-		page = new Page(id);
-		loadedPages.put(id, page);
+		
 		return page;
 	}
 	
