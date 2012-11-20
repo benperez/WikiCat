@@ -14,46 +14,13 @@ import java.util.Set;
  */
 public class PageManager 
 {
-	
-	//Database Authentication
-	private static final String DB_ADDRESS = "jdbc:mysql://localhost/wiki_category";
-	private static final String DB_USER = "cfeo";
-	private static final String DB_PASS = "wikicat";
-	
-	
 	//The cache of already-loaded pages
 	private static Map<Integer,Page> loadedPages;
 	
-	//A connection to the database
-	private static Connection connection;
 	
-	
-	//Static initializer for JDBC connection
+	//Static initializer for the cached pages
 	static 
 	{
-		//Initialize the driver
-		try
-		{
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e)
-		{
-			System.err.println("Cannot find the MySQL JDBC Driver!");
-			e.printStackTrace();
-		}
-		System.out.println("MySQL JDBC Driver registered!");
-		
-		//Get a connection to the database
-		connection = null;
-		try
-		{
-			connection = DriverManager.getConnection(DB_ADDRESS, DB_USER, DB_PASS);
-		} catch (SQLException e)
-		{
-			System.err.println("Error connection to database!");
-			e.printStackTrace();
-		}
-		System.out.println("Successfully connected to database!");
-		
 		//Instantiate the empty set of pages
 		loadedPages = new HashMap<Integer,Page>();
 	}
@@ -65,7 +32,8 @@ public class PageManager
 	 */
 	public static Set<Page> getOutgoingLinks(Page page)
 	{
-		//TODO
+		//String query
+		//DBManager.query(query);
 		return null;
 	}
 	
@@ -86,28 +54,6 @@ public class PageManager
 		page = new Page(id);
 		loadedPages.put(id, page);
 		return page;
-	}
-	
-	
-	/**
-	 * Executes the given query string on the DB returning either a ResultSet or null if there was an error.
-	 * NOTE: Remember to close your result sets!
-	 * @param query The mySQL query string to execute
-	 * @return A ResultSet object if the query was successful, or null.
-	 */
-	private static ResultSet executeQuery(String query) {
-		try
-		{
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT count(page_id) FROM page;");
-			rs.first();
-			return rs;
-		} catch (SQLException e)
-		{
-			System.err.println("Error executing query!");
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 }
