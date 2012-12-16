@@ -7,7 +7,7 @@
 
 	<target name="compile">
 		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
 	</target>
 
 	<target name="dist" depends="compile">
