@@ -26,24 +26,24 @@ public class DBManager
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println("MySQL JDBC Driver registered!");
 		} catch (ClassNotFoundException e)
 		{
 			System.err.println("Cannot find the MySQL JDBC Driver!");
 			e.printStackTrace();
 		}
-		System.out.println("MySQL JDBC Driver registered!");
 
 		//Get a connection to the database
 		connection = null;
 		try
 		{
 			connection = DriverManager.getConnection(DB_ADDRESS, DB_USER, DB_PASS);
+			System.out.println("Successfully connected to database!");
 		} catch (SQLException e)
 		{
 			System.err.println("Error connection to database!");
 			e.printStackTrace();
 		}
-		System.out.println("Successfully connected to database!");
 	}
 	
 	

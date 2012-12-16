@@ -4,29 +4,33 @@
 	<property name="lib" location="lib"/>
 	<property name="build" location="build"/>
 	<property name="dist" location="dist"/>
-
-	<target name="compile">
+	
+	<target name="clean">
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+	
+	<target name="compile" depends="clean">
 		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}" target="1.6"/>
 	</target>
 
 	<target name="dist" depends="compile">
 		<mkdir dir="${dist}"/>
 		<jar jarfile="${dist}/walk.jar" basedir="${build}" includes="graph/**,walk/**">
+			<zipgroupfileset dir="${lib}" includes="**/*.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="walk/Main"/>
 			</manifest>
 		</jar>
 		<jar jarfile="${dist}/closest.jar" basedir="${build}" includes="graph/**,closest/**">
+			<zipgroupfileset dir="${lib}" includes="**/*.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="closest/Main"/>
 			</manifest>
 		</jar>
 	</target>
 
-	<target name="clean">
-		<delete dir="${build}"/>
-		<delete dir="${dist}"/>
-	</target>
+	
 	
 </project>
