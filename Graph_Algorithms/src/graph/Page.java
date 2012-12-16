@@ -16,7 +16,8 @@ import java.util.Set;
  **/
 public class Page 
 {
-	int pageId;
+	public int pageId;
+	String pageName;
 	Set<Page> OutgoingLinks;
 	Map<Page,Double> TransitionProbabilities;
 	Set<Category> Categories;
@@ -82,6 +83,15 @@ public class Page
 		}
 		
 		return OutgoingLinks;
+	}
+	
+	public String getName()
+	{
+		if (pageName==null) {
+			pageName = PageManager.getPageName(this);
+		}
+		
+		return pageName;
 	}
 	
 	/**

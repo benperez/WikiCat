@@ -65,6 +65,31 @@ public class PageManager
 	
 	
 	/**
+	 * Gets a page's name from the database.
+	 * @param p The page whose name to retrieve.
+	 * @return The string name of the page.
+	 */
+	public static String getPageName(Page p)
+	{
+		String query = "SELECT P.page_title as name FROM page as P WHERE P.page_id="+p.pageId+";";
+		ResultSet rs = DBManager.query(query);
+		if (rs==null){
+			return null;
+		}
+		
+		try
+		{
+			rs.next();
+			return rs.getString("name");
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
 	 * Retrieves a Page object by id either from the cache or the database.
 	 * @param id The integer id of the Page object to retrieve.
 	 * @return The Page object represented by the given id

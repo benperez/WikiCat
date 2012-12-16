@@ -4,6 +4,8 @@ import graph.Category;
 import graph.Page;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 public class Main
@@ -38,28 +40,28 @@ public class Main
 		Set<Category> foundCats = new HashSet<Category>();
 		
 		Page root = new Page(rootID);
+		System.out.println("Root Page ("+root.pageId+"): "+root.getName());
 		
 		//We are expanding breadth first, so this:
 		Set<Page> visited = new HashSet<Page>();
-		Set<Page> frontier = new HashSet<Page>();
+		Queue<Page> frontier = new LinkedList<Page>();
 		frontier.add(root);
-		visited.add(root);
-		while (foundCats.size()<maxCats)
+		while (foundCats.size()<maxCats && frontier.size()!=0)
 		{
-			Set<Page> nextFrontier = new HashSet<Page>();
-			for (Page p : frontier)
+			Page p = frontier.poll();
+			
+			//Ignore visited pages
+			if (!visited.contains(p))
 			{
-				//Populate the next frontier from this one (And mark them as visited).
-				if (!visited.contains(p))
-				{
-					nextFrontier.addAll( p.getOutLinks() );
-					visited.addAll( p.getOutLinks() );
-				}
+				//Add this pages links to the frontier
+				frontier.addAll( p.getOutLinks() );
 				
 				//Add any new categories to The List
 				foundCats.addAll( p.getCategories() );
+				
+				//We are done visiting this page
+				visited.add(p);
 			}
-			frontier = nextFrontier;
 		}
 		
 		//Now just print our resulting categories
