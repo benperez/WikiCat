@@ -6,4 +6,5 @@ proposal.ps
 *.blg
 .D*
 *~
-*.class
+*.classGraph_Algorithms/dist
+Graph_Algorithms/build
