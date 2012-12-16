@@ -1,3 +1,7 @@
+package walk;
+import graph.Category;
+import graph.Page;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +25,7 @@ public class Main
 		{
 			System.out.println("main usage: ");
 			System.out.println("\tjava -jar main.java [ID of start page] [NUM walks]");
+			return;
 		}
 		else if (args.length != 2)
 		{
