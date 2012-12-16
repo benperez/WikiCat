@@ -10,7 +10,7 @@ public class DBManager
 
 	//Database Authentication
 	private static final String DB_ADDRESS = "jdbc:mysql://localhost/wiki_category";
-	private static final String DB_USER = "cfeo";
+	private static final String DB_USER = "feoc";
 	private static final String DB_PASS = "wikicat";
 
 
