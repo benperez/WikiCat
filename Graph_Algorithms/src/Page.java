@@ -58,6 +58,7 @@ public class Page
 		{
 			//PageManager handles lazy loading of neighbors
 			Set<Page> outgoing = PageManager.getOutgoingLinks(this);
+			//System.out.println("Outgoing Size: "+outgoing.size());
 			//For now, just using uniform probabilities across all outgoing links
 			TransitionProbabilities = makeUniformProbabilities(outgoing);
 			return TransitionProbabilities;
@@ -77,9 +78,10 @@ public class Page
 		//Load Categories if needed
 		if (Categories == null)
 		{
-			String query =	"Select cl_to as Cat" +
-							"from categorylinks" +
-							"where cl_from = "+Integer.toString(pageId)+";";
+			String query =	"SELECT C.cat_title as Cat " +
+							"FROM categorylinks as CL, category as C " +
+							"WHERE CL.cl_from = "+Integer.toString(pageId) + " " +
+							"AND C.cat_hidden=0 AND C.cat_title=CL.cl_to;";
 			ResultSet rs = DBManager.query(query);
 			Categories = new HashSet<Category>();
 			if (rs != null)

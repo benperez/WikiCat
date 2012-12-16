@@ -38,7 +38,7 @@ public class Walker
 			//Choose where to go based on the transition probabilities for the current Page
 			Map<Page,Double> transitions = current_page.getTransitionProbabilites();
 			double rand = Math.random(); //Choose a random number btwn 0 and 1
-			double range_start = 0;
+			double range_start = 0.0;
 			for (Page p : transitions.keySet())
 			{
 				//Map each transition probability to a range between [0-1] and see which one our random choice falls within.

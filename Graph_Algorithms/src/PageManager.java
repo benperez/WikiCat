@@ -33,7 +33,10 @@ public class PageManager
 	{
 		//Run a query to get the page ids linked to by the given one
 		//TODO Do some more sanity checking to make sure we're getting good pages
-		String query = "SELECT P.page_id as id FROM pagelinks as PL, page as P WHERE P.page_namespace=0 AND PL.pl_from="+page.pageId+" AND PL.title=P.page_title;";
+		String query =  "SELECT P.page_id as id " +
+						"FROM pagelinks as PL, page as P " +
+						"WHERE P.page_namespace=0 " +
+						"AND PL.pl_from="+page.pageId+" AND PL.pl_title=P.page_title;";
 		ResultSet rs = DBManager.query(query);
 		if (rs==null){
 			return null;

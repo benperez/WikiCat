@@ -56,7 +56,7 @@ public class DBManager
 		try
 		{
 			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT count(page_id) FROM page;");
+			ResultSet rs = stmt.executeQuery(query);
 			rs.first();
 			return rs;
 		} catch (SQLException e)
