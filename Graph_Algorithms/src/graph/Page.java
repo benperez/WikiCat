@@ -1,3 +1,5 @@
+package graph;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Set;
 public class Page 
 {
 	int pageId;
+	Set<Page> OutgoingLinks;
 	Map<Page,Double> TransitionProbabilities;
 	Set<Category> Categories;
 	
@@ -56,16 +59,29 @@ public class Page
 		//Load Transition Probabilities if needed
 		if (TransitionProbabilities == null)
 		{
-			//PageManager handles lazy loading of neighbors
-			Set<Page> outgoing = PageManager.getOutgoingLinks(this);
-			//System.out.println("Outgoing Size: "+outgoing.size());
 			//For now, just using uniform probabilities across all outgoing links
-			TransitionProbabilities = makeUniformProbabilities(outgoing);
+			TransitionProbabilities = makeUniformProbabilities( getOutLinks() );
 			return TransitionProbabilities;
 		} else
 		{
 			return TransitionProbabilities;
 		}
+	}
+	
+	/**
+	 * Getter method for outgoing links from this page.
+	 * 
+	 * @return A set of Pages linked to by this page.
+	 */
+	public Set<Page> getOutLinks()
+	{
+		if (OutgoingLinks == null)
+		{
+			//PageManager handles lazy loading of neighbors
+			OutgoingLinks = PageManager.getOutgoingLinks(this);
+		}
+		
+		return OutgoingLinks;
 	}
 	
 	/**

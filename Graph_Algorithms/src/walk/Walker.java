@@ -1,3 +1,7 @@
+package walk;
+import graph.Category;
+import graph.Page;
+
 import java.util.Map;
 import java.util.Set;
 

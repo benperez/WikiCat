@@ -1,0 +1,32 @@
+<project name="Graph Algorithm" default="dist" basedir=".">
+	
+	<property name="src" location="src"/>
+	<property name="lib" location="lib"/>
+	<property name="build" location="build"/>
+	<property name="dist" location="dist"/>
+
+	<target name="compile">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}"/>
+	</target>
+
+	<target name="dist" depends="compile">
+		<mkdir dir="${dist}"/>
+		<jar jarfile="${dist}/walk.jar" basedir="${build}" includes="graph/**,walk/**">
+			<manifest>
+				<attribute name="Main-Class" value="walk/Main"/>
+			</manifest>
+		</jar>
+		<jar jarfile="${dist}/closest.jar" basedir="${build}" includes="graph/**,closest/**">
+			<manifest>
+				<attribute name="Main-Class" value="closest/Main"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+	
+</project>
