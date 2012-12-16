@@ -64,6 +64,11 @@ public class Main
 			frontier = nextFrontier;
 		}
 		
+		//Now just print our resulting categories
+		for (Category c : foundCats) {
+			System.out.println(c.getName());
+		}
+		
 	}
 
 }
