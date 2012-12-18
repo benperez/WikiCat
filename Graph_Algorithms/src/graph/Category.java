@@ -5,7 +5,7 @@ package graph;
  * 
  * 
  **/
-public class Category 
+public class Category
 {
 	String name;
 	
@@ -27,5 +27,14 @@ public class Category
 	public String getName()
 	{
 		return name;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Category) {
+			Category c = (Category) obj;
+			return this.name.equals(c.name);
+		}
+		return false;
 	}
 }
