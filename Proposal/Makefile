@@ -12,7 +12,7 @@ PS=proposal.ps
 	# Core compilation commands
 CC=latex
 BB=bibtex
-BUILDPS=dvips -o $(PS) 
+BUILDPS=dvips -t letterSize -o $(PS) 
 BUILDPDF=ps2pdf
 
 all:$(TEX) $(BIB)

@@ -73,19 +73,17 @@ Graph based approaches such as these avoid the scalability bottleneck of needing
 
 This paper plans to build on the preliminary results described here to develop a label propagation technique which can scale to the entire Wikipedia dataset. This approach will combine the robust, multiclass nature of a technique like the rendezvous algorithm with approaches for dealing with scalability similar to those Chidlovskii describes to produce a superior classification system.
 
-\section{Project Proposal}
-\label{sec:project_proposal}
+\section{System Model}
+\label{sec:system_model}
 Our approach to this problem is twofold: first prune the input data to a more reasonable subset of potential article-category pairings. Then apply machine learning techniques using features inherent in each pairing to create a decision tree or other classifier which outputs a confidence in the correctness of the missing link. We then plan to integrate these results into a browser-based plugin which can provide a ranked list of the potential categorizations to editors as they browse through Wikipedia.
 
-\subsection{Anticipated Approach}
-\label{subsec:approach}
-Our plan to formulate ranked suggestions consists of a rough, graph-based ``first-pass'' which will provide potential missing categorizations in a graph of articles. The final result should exhibit high recall while still significantly reducing the number of possible categorizations for an article~\cite{Avrachenkov}. These potential article-category pairings will be used later as a basis for feature selection.
+We will first generate rough suggestions by running a graph-based ``first-pass'' algorithm, which will provide potential missing categorizations in a graph of articles. The final result should exhibit high recall while still significantly reducing the number of possible categorizations for an article~\cite{Avrachenkov}. These potential article-category pairings will be used later as a basis for feature selection.
 
 Next we take a statistically sampled subset of these potential categorizations and have individuals---ideally Wikipedia editors themselves, if we can recruit them---label each article-category pair as either good or bad. We plan to use the machine learning software Weka~\cite{Weka} to create a model for scoring and ranking the suggestions we have obtained from our graph-based approach. While high-recall was the goal of the graph-based algorithms, here we want to improve the precision of the suggestions we will ultimately produce. 
 
 One important factor in learning such a model is determining the features that go into the algorithm. One feature that we will input to the algorithm is the numerical score from the graph algorithm. Other features that we will explore will include document similarity measures between an article and articles with the suggested category, metadata about the article and suggested category, and possibly properties of the category graph such as subcategory or supercategory relationships.
 
-Finally if time allows and our techniques are robust enough we plan to make our data available to editors by integrating with the popular tool HotCat~\cite{HotCat}---which eases category management for Wikipedians. It is our plan to offer a simple ranked list of the top five or so potential categorizations for an article such that an editor visiting a page can quickly glance at our tool and check whether any of the supplied categories are appropriate. Figure~\ref{fig:block_diagram} illustrates the proposed architecture of the entire system.
+Finally if time allows and our techniques are robust enough we plan to make our data available to editors by integrating with the popular tool HotCat~\cite{HotCat}---which eases category management for Wikipedians. It is our plan to offer a simple ranked list of the top five or so potential categorizations for an article such that an editor visiting a page can quickly glance at our tool and check whether any of the supplied categories are appropriate. Figure~\ref{fig:block_diagram} illustrates the proposed architecture of the entire system in block-diagram form.
 \begin{figure*}[htb!]
 	\begin{center}
 		\includegraphics[width=1.0\linewidth]{block_diagram}
@@ -95,13 +93,36 @@ Finally if time allows and our techniques are robust enough we plan to make our 
 	\label{fig:block_diagram}
 \end{figure*}
 
+\section{System Implementation}
+\label{sec:system_implementation}
+
+Thus far we have completed implementation of the graph-based first phase. We chose Java as our primary language due to its acceptable performance for general computing tasks as well as our past experience using Java in large projects. Another consideration in choosing Java is the large number of libraries available as well as the possibility of using a distributed computing framework like Hadoop in the future.
+
+Initially we planned to represent Wikipedia articles and categories as a graph-structure which could be contained entirely in memory. However, because all of the data we need is available as database tables this was unnecessary. These tables are available as SQL and can be obtained directly from Wikipedia. We chose to implement a system which uses calls to a mySQL database to lazy load articles and links as they are needed. For example, when our algorithm needs to find all outgoing links from an article, it queries a manager object which maintains a cache of all previously loaded pages and loads required pages on cache misses. This results in very little memory overhead for our running processes and a minimal number of queries to the database.
+
+We have used this framework to build and test two different types of graph algorithms. Both algorithms take as input a specific article and return a list of potential new categories. One of the algorithms also outputs a score for each new category. These scores roughly correspond to the categories' relative frequency of occurrence in the input article's hyperlinked neighbors.
+
+The first technique is a simple breadth-first search of all hyperlinked articles. This search returns the first n categories it finds, where n can be specified by the algorithm. Starting from a root article, the breadth-first search inspects the first adjacent (hyperlinked) article's categories and adds them to the output set of suggestions. This process is repeated in a breadth-first manner until the specified number of new categories are found. While this technique is fairly simple to implement, it does not output scores for each new category..
+
+The second technique utilizes random walks to find and return a weighted score for new category suggestions. Starting from a root article, the algorithm queries all of its hyperlinked neighbors. The random walk currently has an equal probability of jumping to any of these neighbors. For walks of length greater than one, this process is repeated multiple times for each article jumped to. When a random walk has completed a number of jumps equal to its length, it adds the categories of the article it ended on to the output set of suggestions for the root article.
+
+This technique runs a fixed number of iterations for each article. Each iteration currently performs a walk of length one, two, and three. A count of all new categories returned at the end of each walk is maintained. In order to weight categories that are farther from the root node lower, counts are incremented at a rate inversely proportional to their distance from the article. For example, seeing a category at distance three is worth one third of the weight of a category at distance one. At the end of all the iterations each category is given a final weight consisting of its count divided by the sum of all category counts. The results are then sorted and returned as suggestions.
+
+One issue we have encountered is the inclusion of many administrative pages and categories in our results. While Wikipedia has an easy method for distinguishing administrative articles from informational articles, no such method exists for categories. We have filtered out administrative articles by ignoring anything not in the default namespace. Administrative categories are more difficult to filter, as there is no explicit identifier for them in the database tables provided by Wikipedia. We have been examining heuristics that take advantage of the relatively straightforward Wikipedia naming conventions for administrative categories. For example, one can usually safely ignore categories which begin with ``Articles\_with'', ``Articles\_lacking'', ``Articles\_needing'', or ``All\_articles\_with''.
+
+\section{System Performance}
+\label{sec:system_performance}
+
+\section{Remaining Work}
+\label{sec:remaining_work}
+
 \subsection{Technical Challenges}
 \label{subsec:tech_challenges}
-The main technical challenges that we anticipate are related to the scale of existing Wikipedia category data. The extremely large number of categories and pages will make efficiently representing the graph in terms of memory a possible challenge. Another issue that arises from the large scale of Wikipidia data is the need for algorithms that are efficient in terms of runtime. 
+The main technical challenges that we anticipate are related to the scale of existing Wikipedia category data. The extremely large number of categories and pages will make efficiently representing the graph in terms of memory a possible challenge. Another issue that arises from the large scale of Wikipedia data is the need for algorithms that are efficient in terms of runtime. 
 
 \subsection{Evaluation Criteria}
 \label{subsec:eval_criteria}
-Evaluation of our results may be broken down into two cases: How do you know when the tool is suggesting a bad categorization and how do you know when it is suggesting a good categorization? To check that our technique is not suggesting bad links, we take the unseen portion of the labeled data which we set aside earlier and test against that. Along with testing on the labeled data, we can check that the tool is suggesting good categorizations by running the graph based-approach over an unlabeled sample with several categorizations removed and check that our algorithm recommends these missing edges with a high probability. Both of these metrics will be part of the experimental ``feature-determination'' portion of our project. Finally, if we tie our system into a browser then there is the potential to collect user feedback on how our tool perfroms ``in the wild''. A similar approach to evaluation is taken by Sunercan et al.  to evaluate the effectiveness of suggested hyperlinks between pages~\cite{Sunercan}.
+Evaluation of our results may be broken down into two cases: How do you know when the tool is suggesting a bad categorization and how do you know when it is suggesting a good categorization? To check that our technique is not suggesting bad links, we take the unseen portion of the labeled data which we set aside earlier and test against that. Along with testing on the labeled data, we can check that the tool is suggesting good categorizations by running the graph based-approach over an unlabeled sample with several categorizations removed and check that our algorithm recommends these missing edges with a high probability. Both of these metrics will be part of the experimental ``feature-determination'' portion of our project. Finally, if we tie our system into a browser then there is the potential to collect user feedback on how our tool performs ``in the wild''. A similar approach to evaluation is taken by Sunercan et al.  to evaluate the effectiveness of suggested hyperlinks between pages~\cite{Sunercan}.
 
 \section{Research Timeline}
 \label{sec:research_timeline}
