@@ -24,7 +24,7 @@ public class Main
 		if (args.length == 0)
 		{
 			System.out.println("main usage: ");
-			System.out.println("\tjava -jar main.java [ID of start page] [NUM walks]");
+			System.out.println("\tjava -jar main.jar [ID of start page] [NUM walks]");
 			return;
 		}
 		else if (args.length != 2)
