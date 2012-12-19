@@ -5,7 +5,7 @@
 %
 
 	%	% AW - Ordinarily we'd begin by specifying some broad document properties like font-size, page-size, margins, etc. -- We have done this (and much more) for you by creating a 'style file', which the 'documentclass' command references.
-\documentclass{sig-alternate}
+\documentclass[]{sig-alternate}
  
 	% AW - These 'usepackage' commands are a way of importing additional LaTeX styles and formattings that aren't part of the 'standard library'
 \usepackage{mdwlist}
@@ -113,31 +113,51 @@ One issue we have encountered is the inclusion of many administrative pages and 
 \section{System Performance}
 \label{sec:system_performance}
 
+\subsection{Desired Properties}
+\label{subsec:desired_properties}
+Since our next milestone is to have annotators label a sample of good and bad category suggestions for articles, the desired properties of the of the graph algorithm are focused on efficiently generating a manageable list of recommendations. Therefore, the algorithm must have at least the following properties:
+\begin{itemize*}
+	\item {\sc High Recall}: Because the output from this algorithm will later be filtered by a classifier or machine-learned model, it is important that this phase of the project returns as many correct categories as possible. Poor categories can be filtered out later, but additional good suggestions cannot be generated after this stage.
+	\item {\sc Scalable Performance}: Wikipedia is a vast dataset containing millions of articles which need categorization. This graph-based portion of the project works directly on each of these articles and their neighbors, meaning it will likely be the bottleneck for the entire system. Our tests on individual categories or small groups of categories must be able to scale to all of Wikipedia.
+\end{itemize*}
+Two additional, though not strictly required properties are listed below:
+\begin{itemize*}
+	\item {\sc Confidence Scores}: A confidence score would be a valuable input to building a model to classify suggestions as good or bad. This would also probably expedite the labeling process, since only the most relevant suggestions could be presented to annotators for labeling.
+	\item {\sc Removal of Irrelevant Results}: As previously mentioned, removal of administrative pages and categories would reduce the number of pages requiring subsequent classification, as well as reduce noise in subsequent classification attempts. This could be performed in the classification phase of the project, but incorporating information from this graph-based approach may also prove helpful for removing irrelevant results.
+\end{itemize*}
+With these properties in mind, we have collected some preliminary results to guide our future efforts as the project progresses.
+
+\subsection{Recall}
+\label{subsec:recall}
+
+\begin{table*}[htb!]
+\centering
+\begin{tabular}{|l|l|}
+	\hline
+	\multicolumn{1}{|c}{Random Walk} & \multicolumn{1}{|c|}{Breadth-First-Search} \\ \hline
+	port\_cities\_and\_towns\_of\_the\_baltic\_sea&knights\_of\_the\_golden\_fleece\\ \hline
+	academy\_honorary\_award\_recipients&denmark\_norway\\ \hline
+	translators\_from\_danish&history\_of\_santa\_barbara\_county,\_california\\ \hline
+	cecil\_b\_demille\_award\_golden\_globe\_winners&use\_dmy\_dates\_from\_august\_2011\\ \hline
+	copenhagen&1768\_births\\ \hline
+	municipal\_seats\_in\_capital\_region\_of\_denmark&danish\_american\_history\\ \hline
+	danish\_silent\_film\_actors&extra\_knights\_companion\_of\_the\_garter\\ \hline
+	use\_dmy\_dates\_from\_august\_2012&regions\_of\_italy\\ \hline
+	american\_people\_of\_danish\_descent&characters\_in\_fairy\_tales\\ \hline
+	translators\_to\_english&dukes\_of\_schleswig\\ \hline
+\end{tabular}
+\caption{Recall Data}
+\end{table*}
+
+\subsection{Scalable Performance}
+\label{subsec:scalable_performance}
+
 \section{Remaining Work}
 \label{sec:remaining_work}
 
-\subsection{Technical Challenges}
-\label{subsec:tech_challenges}
-The main technical challenges that we anticipate are related to the scale of existing Wikipedia category data. The extremely large number of categories and pages will make efficiently representing the graph in terms of memory a possible challenge. Another issue that arises from the large scale of Wikipedia data is the need for algorithms that are efficient in terms of runtime. 
 
-\subsection{Evaluation Criteria}
-\label{subsec:eval_criteria}
-Evaluation of our results may be broken down into two cases: How do you know when the tool is suggesting a bad categorization and how do you know when it is suggesting a good categorization? To check that our technique is not suggesting bad links, we take the unseen portion of the labeled data which we set aside earlier and test against that. Along with testing on the labeled data, we can check that the tool is suggesting good categorizations by running the graph based-approach over an unlabeled sample with several categorizations removed and check that our algorithm recommends these missing edges with a high probability. Both of these metrics will be part of the experimental ``feature-determination'' portion of our project. Finally, if we tie our system into a browser then there is the potential to collect user feedback on how our tool performs ``in the wild''. A similar approach to evaluation is taken by Sunercan et al.  to evaluate the effectiveness of suggested hyperlinks between pages~\cite{Sunercan}.
-
-\section{Research Timeline}
-\label{sec:research_timeline}
-\begin{itemize*}
-	\item {\sc Already Completed}: We have gathered an extensive amount of related research and conducted preliminary research into potentially applicable graph algorithms. We have also set up a mySQL database and imported Wikipedia category, link, and article data.\vspace{3pt}
-	\item {\sc By Thanksgiving}: We want to have a good enough understanding of our approach to the graph-based first pass so that we can decide on how to represent the graph in an efficient way and begin that implementation.\vspace{3pt}
-	\item {\sc By Christmas}: Have the graph-based portion of the project up and running and begin looking into methods of tagging the output data, whether that be via actual Wikipedia editors, Mechanical Turk, etc.\vspace{3pt}
-	\item {\sc By Early February}: We want to have obtained the tags for the article-category pairs by whatever means we decide on. During this time we can create the list of potential input features and set up the testing environment for Weka.\vspace{3pt}
-	\item {\sc By Late March}: Have determined a minimal set of useful features and continue testing. Begin organizing ideas for final writeups and work on integration with Hotcat if there is time.\vspace{3pt}
-	\item {\sc Final Tasks}: Finish the project writeup and complete integration with Hotcat. Try to get Wikipedia editors to try the tool out. Collect feedback from editors and incorporate it into conclusion of writeup.
-\end{itemize*}
-
-	% AW: We next move onto the bibliography.
-\bibliographystyle{plain} % Please do not change the bib-style
-\bibliography{proposal}  % Just the *.BIB filename
+\bibliographystyle{plain}
+\bibliography{proposal}
 \nocite{*}
 
 \end{document} 
