@@ -130,11 +130,21 @@ With these properties in mind, we have collected some preliminary results to gui
 \subsection{Recall}
 \label{subsec:recall}
 
+Figure~\ref{fig:recall_table} displays example output---suggested categories---from the two algorithms for the article on Danish writer Hans Christian Andersen. While only the random walk technique provides explicit scores for each suggestions, we can see that the relevance of the suggestions from breadth-first search also decreases from top to bottom. Both techniques produce similarly relevant results. The relative simplicity of the breadth-first search technique is probably offset by the random walk technique's tendency to travel and collect categories from further and possibly less relevant pages. These categories tend to focus on locations and dates, particularly for pages on historic figures---which tend to be part of many list articles. The higher relevance of earlier results in the breadth-first method can be explained by the fact that categories which appear earlier are taken from pages which are located closer to the root article.
+
+We also ran a test to determine the size of the intersection---or overlap---between the two methods output for a given article. We examined how many categorizations out of 100 were suggested by both algorithms on three different pages. The results are summarized in Figure~\ref{fig:recall_table} for these three articles. There was only about 10\% overlap between the two algorithms.
+
+\subsection{Scalable Performance}
+\label{subsec:scalable_performance}
+
+The average running time of each algorithm on three different articles, as well as the overlap of their suggestions, is recorded in Figure~\ref{fig:runtime_table}. While the breadth-first algorithm is slightly faster in most cases, the two are close enough that the difference is largely irrelevant. More interesting, the runtimes are all around one second. This means that for the four million content pages on wikipedia it would take about 46 days to generate 100 suggestions for all pages. In practice this number will likely be lower, since the algorithm will likely be running on faster hardware. However, the runtime could still benefit from optimization and this is an area we are looking into moving forward.
+
 \begin{table*}[htb!]
 \centering
 \begin{tabular}{|l|l|}
 	\hline
-	\multicolumn{1}{|c}{Random Walk} & \multicolumn{1}{|c|}{Breadth-First-Search} \\ \hline
+	\multicolumn{2}{|c|}{Hans Christian Anderson} \\ \hline
+	\multicolumn{1}{|c}{Random Walk} & \multicolumn{1}{|c|}{Breadth-First-Search} \\ \hline \hline
 	port\_cities\_and\_towns\_of\_the\_baltic\_sea&knights\_of\_the\_golden\_fleece\\ \hline
 	academy\_honorary\_award\_recipients&denmark\_norway\\ \hline
 	translators\_from\_danish&history\_of\_santa\_barbara\_county,\_california\\ \hline
@@ -145,16 +155,58 @@ With these properties in mind, we have collected some preliminary results to gui
 	use\_dmy\_dates\_from\_august\_2012&regions\_of\_italy\\ \hline
 	american\_people\_of\_danish\_descent&characters\_in\_fairy\_tales\\ \hline
 	translators\_to\_english&dukes\_of\_schleswig\\ \hline
+	knights\_of\_the\_order\_of\_the\_dannebrog&norwegian\_monarchs\\ \hline
+	articles\_containing\_potentially\_dated\_statements\_from\_january\_2012&danish\_migration\_to\_north\_america\\ \hline
+	presidents\_of\_the\_academy\_of\_motion\_picture\_arts\_and\_sciences&grand\_commanders\_of\_the\_order\_of\_the\_dannebrog\\ \hline
+	burials\_at\_forest\_lawn\_memorial\_park\_(glendale)&calabria\\ \hline
+	articles\_containing\_potentially\_dated\_statements\_from\_july\_2012&cities\_in\_santa\_barbara\_county,\_california\\ \hline
+	articles\_containing\_danish\_language\_text&dukes\_of\_saxe-lauenburg\\ \hline
+	articles\_containing\_potentially\_dated\_statements\_from\_2011&works\_by\_hans\_christian\_andersen\\ \hline
+	municipal\_seats\_of\_denmark&bruttium\\ \hline
+	danish\_translators&1839\_deaths\\ \hline
+	european\_capitals\_of\_culture&use\_dmy\_dates\_from\_august\_2012\\ \hline
+	capitals\_in\_europe&regents\\ \hline
+	port\_cities\_and\_towns\_in\_denmark&burials\_at\_roskilde\_cathedral\\ \hline
+	danish\_film\_actors&people\_from\_copenhagen\\ \hline
+	hans\_christian\_andersen&peninsulas\_of\_italy\\ \hline
+	populated\_places\_established\_in\_the\_11th\_century&19th-century\_monarchs\_in\_europe\\ \hline
+	cancer\_deaths\_in\_california&fairy\_tales\\ \hline
+	danish\_emigrants\_to\_the\_united\_states&danish\_monarchs\\ \hline
+	all\_articles\_containing\_potentially\_dated\_statements&wine\_regions\_of\_italy\\ \hline
+	1956\_deaths&protestant\_monarchs\\ \hline
+	1886\_births&incorporated\_cities\_and\_towns\_in\_california\\ \hline
+	cities\_and\_towns\_in\_capital\_region\_of\_denmark&populated\_places\_established\_in\_1911\\ \hline
+	danish\_dramatists\_and\_playwrights&literature\_featuring\_anthropomorphic\_characters\\ \hline
+	norwegian\_essayists&nuts\_2\_statistical\_regions\_of\_the\_european\_union\\ \hline
+	danish\_essayists&regents\_of\_denmark\\ \hline
+	denmark\_norway&accuracy\_disputes\_from\_august\_2012\\ \hline
+	norwegian\_dramatists\_and\_playwrights&fictional\_birds\\ \hline
+	visitor\_attractions\_in\_santa\_barbara\_county,\_california&visitor\_attractions\_in\_santa\_barbara\_county,\_california\\ \hline
+	incorporated\_cities\_and\_towns\_in\_california&house\_of\_oldenburg\\ \hline
+	18th-century\_danish\_people&1911\_establishments\_in\_the\_united\_states\\ \hline
+	cities\_in\_santa\_barbara\_county,\_california&persondata\_templates\_without\_short\_description\_parameter\\ \hline
 \end{tabular}
-\caption{Recall Data}
+\caption{Top 40 Suggested Categories From Each Algorithm}
+\label{fig:recall_table}
 \end{table*}
 
-\subsection{Scalable Performance}
-\label{subsec:scalable_performance}
+\begin{table*}[htb!]
+\centering
+\begin{tabular}{|l|r|r|r|}
+	\hline
+	\multicolumn{1}{|c}{Article Title} & \multicolumn{1}{|c}{Suggestion Overlap (\%)} & \multicolumn{1}{|c}{Breadth-First Runtime (s)} & \multicolumn{1}{|c|}{Random Walk Runtime (s)} \\ \hline \hline
+	Hans Christian Andersen & 5.21544565418 & 1.00786779928 & 1.17027116942\\ \hline
+	Acoustic Theory & 14.4684335914 & 1.06326193118 & 1.05459133649\\ \hline
+	Gun Control & 10.77322996802 & 1.09626546693 & 1.2392341857\\ \hline
+\end{tabular}
+\caption{Algorithm Runtimes and Suggestion Overlap}
+\label{fig:runtime_table}
+\end{table*}
 
 \section{Remaining Work}
 \label{sec:remaining_work}
 
+Our immediate next step is to develop more extensive heuristics to filter out administrative categories. This is a matter of determining a wider array of title types for administrative categories. Following this, our next priority is getting sample data from the graph algorithm labeled. We are currently exploring options for achieving this, including Mechanical Turk and Wikipedia editors. By late February, our plan is to have obtained the labeled data and to begin using Weka to train a classifier for further scoring category suggestions. Finally, we will use the results from our classifier to further refine suggestions and ultimately integrate with HotCat. If there is time, we would still like to collect feedback from editors to assess the usefulness of the suggestions. Thus far we have kept up with our project timeline---as laid out in our proposal---and have completed about 45\% of the project to date.
 
 \bibliographystyle{plain}
 \bibliography{proposal}
