@@ -56,8 +56,10 @@ public class Main
 				//Add this pages links to the frontier
 				frontier.addAll( p.getOutLinks() );
 				
-				//Add any new categories to The List
-				foundCats.addAll( p.getCategories() );
+				//Add any _new_ categories to: The List
+				Set<Category> cats = p.getCategories();
+				cats.removeAll(root.getCategories());
+				foundCats.addAll(cats);
 				
 				//We are done visiting this page
 				visited.add(p);

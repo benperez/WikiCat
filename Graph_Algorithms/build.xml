@@ -12,7 +12,7 @@
 	
 	<target name="compile" depends="clean">
 		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}" includeantruntime="false" target="1.6"/>
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false" source="1.6" target="1.6"/>
 	</target>
 
 	<target name="dist" depends="compile">
