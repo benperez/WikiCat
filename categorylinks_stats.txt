@@ -1,0 +1,54 @@
+/* ====================================
+ * Selects all pages which share a category with page_id 4356.
+ * ==================================== */
+SELECT page.page_title, page.page_id
+FROM page, categorylinks as link1, categorylinks as link2
+WHERE
+ link1.cl_to=link2.cl_to AND
+ link2.cl_from=page.page_id AND
+ link1.cl_from=4356;
+
+ 
+/* ====================================
+ * Creates a view to run queries on the articles in each category
+ * (Note: Kinda slow b/c of the namespace check.)
+ * ==================================== */
+CREATE OR REPLACE VIEW category_link_counts AS
+SELECT links.cl_to as cat_name, count(links.cl_from) as cat_count
+FROM categorylinks as links, page
+WHERE
+ links.cl_from=page.page_id AND
+ page.page_namespace=0
+GROUP BY links.cl_to;
+
+
+/* ====================================
+ * Figures out various stats related to # of articles per category.
+ * ==================================== */
+SELECT avg(cat_count) as average, max(cat_count) as maximum, min(cat_count) as minimum FROM category_link_counts;
+
+/* Articles Per Category (No heuristics):
+ * ------------------------
+ * Avg: 7.3979
+ * Max: 42912
+ * Min: 1
+ */
+
+
+/* ====================================
+ * Same sort of thing with a couple heuristics
+ * ==================================== */
+SELECT avg(cl.cat_count) as average, max(cl.cat_count) as maximum, min(cl.cat_count) as minimum
+FROM category_link_counts AS cl
+WHERE
+ cl.cat_name NOT LIKE '%wikipedia%' AND
+ cl.cat_name NOT LIKE '%articles_%' AND
+ cl.cat_name NOT LIKE '%all_pages%' AND
+ cl.cat_name NOT LIKE '%category_template%';
+
+/* Articles Per Category (With heuristics):
+ * Avg: 6.6763
+ * Max: 25517
+ * Min: 1
+ */
+ 
