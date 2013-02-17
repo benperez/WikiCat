@@ -1,25 +1,19 @@
 package graph;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 
 /**
  * Class for a Page, or Article, in Wikipedia
- * 
- * Page objects are retrieved through the PageManager
- * 
  **/
 public class Page 
 {
 	public int pageId;
 	String pageName;
-	Set<Page> OutgoingLinks;
-	Map<Page,Double> TransitionProbabilities;
 	Set<Category> Categories;
 	
 	/**
@@ -33,62 +27,88 @@ public class Page
 	}
 	
 	
-	/**
-	 * Create a uniform probability distribution over the given pages
-	 * 
-	 * @param outgoingLinks The set of all pages linked to
-	 * @return a mapping of N hyperlinked pages each with 1/N probability
-	 */
-	private HashMap<Page,Double> makeUniformProbabilities(Set<Page> outgoingLinks)
-	{
-		HashMap<Page, Double> probabilities = new HashMap<Page, Double>();
-		Double uniform = new Double(1.0/outgoingLinks.size());
-		for (Page p : outgoingLinks)
-		{
-			probabilities.put(p, uniform);
-		}
-		return probabilities;
-	}
+	/////////////////////////
+	// Data Retrieval
+	/////////////////////////
 	
 	/**
-	 * Getter method for transition probabilities of this page
-	 * 
-	 * @return map of Page to its associated transition probability
+	 * Queries the database for this page's title.
 	 */
-	public Map<Page,Double> getTransitionProbabilites()
+	private void retrievePageName()
 	{
-		//Load Transition Probabilities if needed
-		if (TransitionProbabilities == null)
+		String query = "SELECT p.page_title as name FROM filtered_page as p WHERE p.page_id="+pageId+";";
+		Connection c = DBManager.getConnection();
+		ResultSet rs = DBManager.execute(c, query);
+		if (rs==null)
 		{
-			//For now, just using uniform probabilities across all outgoing links
-			TransitionProbabilities = makeUniformProbabilities( getOutLinks() );
-			return TransitionProbabilities;
-		} else
-		{
-			return TransitionProbabilities;
-		}
-	}
-	
-	/**
-	 * Getter method for outgoing links from this page.
-	 * 
-	 * @return A set of Pages linked to by this page.
-	 */
-	public Set<Page> getOutLinks()
-	{
-		if (OutgoingLinks == null)
-		{
-			//PageManager handles lazy loading of neighbors
-			OutgoingLinks = PageManager.getOutgoingLinks(this);
+			pageName = null;
 		}
 		
-		return OutgoingLinks;
+		try
+		{
+			rs.next();
+			pageName = rs.getString("name");
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			pageName = null;
+		}
+		
+		//Release the connection back to the pool.
+		DBManager.closeConnection(c, rs);
 	}
 	
+	
+	/**
+	 * Retrieves the set of categories for this page.
+	 */
+	private void retrieveCategories()
+	{
+		String query =	"SELECT c.cat_title as cat, c.cat_pages as count " +
+				"FROM filtered_categorylinks as cl, filtered_category as c " +
+				"WHERE cl.cl_from = "+Integer.toString(pageId) + " " +
+				"AND c.cat_hidden=0 AND c.cat_title=cl.cl_to;";
+		Connection c = DBManager.getConnection();
+		ResultSet rs = DBManager.execute(c, query);
+		
+		Categories = new HashSet<Category>();
+		
+		if (rs != null)
+		{
+			try 
+			{
+				while(rs.next())
+				{
+					String catName = rs.getString("cat");
+					int catCount = rs.getInt("count");
+					Category temp = new Category(catName, catCount);
+					Categories.add(temp);
+				}
+			} catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		//Release the connection back to the pool.
+		DBManager.closeConnection(c, rs);
+	}
+	
+	/////////////////////////
+	// Getter Methods
+	/////////////////////////
+	
+	/**
+	 * Getter for the page title.
+	 * 
+	 * @return The String name of this page.
+	 */
 	public String getName()
 	{
-		if (pageName==null) {
-			pageName = PageManager.getPageName(this);
+		if (pageName == null)
+		{
+			retrievePageName();
 		}
 		
 		return pageName;
@@ -101,34 +121,11 @@ public class Page
 	 */
 	public Set<Category> getCategories()
 	{
-		//Load Categories if needed
 		if (Categories == null)
 		{
-			String query =	"SELECT C.cat_title as Cat " +
-							"FROM categorylinks as CL, category as C " +
-							"WHERE CL.cl_from = "+Integer.toString(pageId) + " " +
-							"AND C.cat_hidden=0 AND C.cat_title=CL.cl_to;";
-			ResultSet rs = DBManager.query(query);
-			Categories = new HashSet<Category>();
-			if (rs != null)
-			{
-				try 
-				{
-					while(rs.next())
-					{
-						String catName = rs.getString("Cat");
-						Category temp = new Category(catName);
-						Categories.add(temp);
-					}
-				} catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
-			} 
-			return Categories;
-		} else
-		{
-			return Categories;
-		}	
+			 retrieveCategories();
+		}
+		
+		return Categories;
 	}
 }
