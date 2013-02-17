@@ -23,12 +23,6 @@
 				<attribute name="Main-Class" value="walk/Main"/>
 			</manifest>
 		</jar>
-		<jar jarfile="${dist}/closest.jar" basedir="${build}" includes="graph/**,closest/**">
-			<zipgroupfileset dir="${lib}" includes="**/*.jar" />
-			<manifest>
-				<attribute name="Main-Class" value="closest/Main"/>
-			</manifest>
-		</jar>
 	</target>
 
 	
