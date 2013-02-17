@@ -5,6 +5,8 @@ import graph.Page;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Class for running tests using our random walk framework
@@ -24,66 +26,89 @@ public class Main
 		if (args.length == 0)
 		{
 			System.out.println("main usage: ");
-			System.out.println("\tjava -jar main.jar [ID of start page] [NUM walks]");
+			System.out.println("\tjava -jar main.jar [NO. PRODUCERS] [NO. CONSUMERS]");
 			return;
 		}
 		else if (args.length != 2)
 		{
-			System.out.println("More ARGS Please!");
+			System.out.println("Wrong number of arguments!");
 			return;
 		}
 		
-			
-		//Initialize this Jackson
-		int sourceID = Integer.parseInt(args[0]);
-		Page source = new Page(sourceID);
+		//Parse arguments
+		int NUM_PRODUCERS = Integer.parseInt(args[0]);
+		int NUM_CONSUMERS = Integer.parseInt(args[1]);
 		
-		Map<Category, Double> counts = new HashMap<Category, Double>();
-		Walker jackson = new Walker(source);
-		Set<Category> walk1;
-		Set<Category> walk2;
-		Set<Category> walk3;
-		//Repeat 10 times at each depth
-		for (int i=0; i<Integer.parseInt(args[1]) ; i++)
+		//Create a blocking queue for the producers and consumers
+		BlockingQueue<Page> queue = new LinkedBlockingQueue<Page>();
+		
+		///Create a number of producers and consumers and start them
+		Thread[] producers = new Thread[NUM_PRODUCERS];
+		Thread[] consumers = new Thread[NUM_CONSUMERS];
+		
+		for (int i=0; i<NUM_PRODUCERS; i++)
 		{
-			//Do a walk of depth 1,2,3,...
-			walk1 = jackson.walk(1);
-			walk2 = jackson.walk(2);
-			walk3 = jackson.walk(3);
-			
-			//Increment the counts
-			for (Category c : walk1)
-			{
-				if (counts.containsKey(c))
-					counts.put(c, counts.get(c)+1.0);
-				else
-					counts.put(c, 1.0);
-			}
-			for (Category c : walk2)
-			{
-				if (counts.containsKey(c))
-					counts.put(c, counts.get(c)+0.5);
-				else
-					counts.put(c, 0.5);
-			}
-			for (Category c : walk3)
-			{
-				if (counts.containsKey(c))
-					counts.put(c, counts.get(c)+1.0/3.0);
-				else
-					counts.put(c, 1.0/3.0);
-			}
-		}
-		double n = 0.0;
-		for (Category c : counts.keySet())
-		{
-			n += counts.get(c);
+			producers[i] = new Thread(new QueueFiller(queue));
+			producers[i].start();
 		}
 		
-		for (Category c : counts.keySet())
+		for (int i=0; i<NUM_CONSUMERS; i++)
 		{
-			System.out.println(c.getName()+": "+( (double) counts.get(c))/n);
+			consumers[i] = new Thread(new Walker(queue));
+			consumers[i].start();
 		}
+		
+		///Start all the threads
+//		//Initialize this Jackson
+//		int sourceID = Integer.parseInt(args[0]);
+//		Page source = new Page(sourceID);
+//		
+//		Map<Category, Double> counts = new HashMap<Category, Double>();
+//		Walker jackson = new Walker(source);
+//		Set<Category> walk1;
+//		Set<Category> walk2;
+//		Set<Category> walk3;
+//		//Repeat 10 times at each depth
+//		for (int i=0; i<Integer.parseInt(args[1]) ; i++)
+//		{
+//			//Do a walk of depth 1,2,3,...
+//			walk1 = jackson.walk(1);
+//			walk2 = jackson.walk(2);
+//			walk3 = jackson.walk(3);
+//			
+//			//Increment the counts
+//			for (Category c : walk1)
+//			{
+//				if (counts.containsKey(c))
+//					counts.put(c, counts.get(c)+1.0);
+//				else
+//					counts.put(c, 1.0);
+//			}
+//			for (Category c : walk2)
+//			{
+//				if (counts.containsKey(c))
+//					counts.put(c, counts.get(c)+0.5);
+//				else
+//					counts.put(c, 0.5);
+//			}
+//			for (Category c : walk3)
+//			{
+//				if (counts.containsKey(c))
+//					counts.put(c, counts.get(c)+1.0/3.0);
+//				else
+//					counts.put(c, 1.0/3.0);
+//			}
+//		}
+//		double n = 0.0;
+//		for (Category c : counts.keySet())
+//		{
+//			n += counts.get(c);
+//		}
+//		
+//		for (Category c : counts.keySet())
+//		{
+//			System.out.println(c.getName()+": "+( (double) counts.get(c))/n);
+//		}
 	}
 	
 }
