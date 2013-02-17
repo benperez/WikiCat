@@ -125,7 +125,6 @@ public class Page
 		{
 			 retrieveCategories();
 		}
-		
 		return Categories;
 	}
 }

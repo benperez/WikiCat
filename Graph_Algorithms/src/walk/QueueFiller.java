@@ -1,6 +1,7 @@
 package walk;
 
 import graph.Page;
+
 import java.util.concurrent.BlockingQueue;
 
 /**
