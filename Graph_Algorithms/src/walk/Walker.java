@@ -64,37 +64,6 @@ public class Walker implements Runnable
 		return null;
 	}
 	
-	/**
-	 * Does a random walk from this Walker (Texas Ranger)s root Page and return the set of categories from the Page it ends up on.
-	 * @param steps The number of steps to take from the starting node.
-	 * @return A Set of the Categories which the final page is assigned to. 
-	 */
-	public Set<Category> walk(Page start_page, int steps)
-	{
-		//Do the walk for the desired number of steps
-		Page current_page = start_page;
-		for (int i=steps; i>0; i--)
-		{
-			//Choose where to go based on the transition probabilities for the current Page
-			Map<Page,Double> transitions = current_page.getTransitionProbabilites();
-			double rand = Math.random(); //Choose a random number btwn 0 and 1
-			double range_start = 0.0;
-			for (Page p : transitions.keySet())
-			{
-				//Map each transition probability to a range between [0-1] and see which one our random choice falls within.
-				double range_end = range_start + transitions.get(p);
-				if (range_start<rand && rand<range_end)
-				{
-					current_page = p;
-					break;
-				}
-				//Move to the next range
-				range_start = range_end;
-			}
-		}
-		
-		return current_page.getCategories();
-	}
 	
 	/**
 	 * Saves the results of this particular walk back to the database
