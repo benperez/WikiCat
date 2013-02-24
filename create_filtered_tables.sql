@@ -54,10 +54,13 @@ INSERT INTO filtered_categorylinks
     -- Don't include links for pages we don't care about
     cl.cl_from=p.page_id AND
     -- Use some simple heurisitcs to filer out administrative categories
-    cl.cl_to NOT LIKE '%wikipedia%' AND
-    cl.cl_to NOT LIKE '%articles_%' AND
-    cl.cl_to NOT LIKE '%all_pages%' AND
-    cl.cl_to NOT LIKE '%category_template%';
+    CONVERT(cl.cl_to USING latin1) NOT LIKE 'all_articles%' AND
+    CONVERT(cl.cl_to USING latin1) NOT LIKE 'articles%'     AND
+    CONVERT(cl.cl_to USING latin1) NOT LIKE 'wikipedia%'    AND
+    CONVERT(cl.cl_to USING latin1) NOT LIKE 'pages%'        AND
+    CONVERT(cl.cl_to USING latin1) NOT LIKE 'all_pages%'    AND
+    CONVERT(cl.cl_to USING latin1) NOT LIKE 'redirects%'    AND
+    CONVERT(cl.cl_to USING latin1) NOT LIKE 'category_template%';
 
 
 -- Filter the items from category (via filtered_categorylinks) into our new table
