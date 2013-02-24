@@ -1,7 +1,13 @@
 package walk;
 
+import graph.DBManager;
 import graph.Page;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -25,22 +31,58 @@ public class QueueFiller implements Runnable
 		{
 			while (true) 
 		    { 
-				Page next = queryNextPage();
-				///Check if the database is empty, in which case the QueueFiller should exit
-				if (next==null){ return; }
-				queue.put(next); 
+				Set<Page> next = queryNextPage();
+				///Check if the database is empty, in which case the QueueFiller should sleep for 10 minutes and try again
+				if (next==null)
+				{
+					//Sleep for 10 minutes
+					long sleep_time = 1000L * 60L * 10L;
+					Thread.sleep(sleep_time);
+					continue;
+				}
+				//Add the pages one at a time
+				for (Page p : next)
+					queue.put(p); 
 		    }
 		} catch (InterruptedException ex) { ex.printStackTrace(); }
 	}
 	
 	/**
 	 * Queries the database for articles which need to be processed
-	 * @return a page to add to the queue for processing
+	 * @return a set of pages to add to the queue for processing
 	 */
-	private Page queryNextPage()
+	private Set<Page> queryNextPage()
 	{
-		///TODO - implement this...
-		return new Page(0);
+		String query = "SELECT page_id from page_todo limit 10;";
+		//Get a DB connection
+		Connection c = DBManager.getConnection();
+		ResultSet rs = DBManager.execute(c, query);
+		//Parse result
+		Set<Page> pages = new HashSet<Page>();
+		try {
+			while (rs.next())
+			{
+				int p_id = rs.getInt("page_id");
+				pages.add( new Page(p_id));
+			}
+		} catch (SQLException e) { e.printStackTrace(); }
+		//Release the connection back to the pool.
+		DBManager.closeConnection(c, rs);
+		//Return null if result set is empty
+		if (pages.isEmpty())
+			return null;
+		
+		//Remove the entries just received from the table
+		StringBuffer delete_query = new StringBuffer();
+		for (Page p : pages)
+		{
+			delete_query.append("DELETE FROM page_todo where page_id = "+p.pageId+";\n");
+		}
+		c = DBManager.getConnection();
+		rs = DBManager.execute(c, delete_query.toString());
+		DBManager.closeConnection(c, rs);
+		
+		return pages;
 	}
 	
 }

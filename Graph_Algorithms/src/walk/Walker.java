@@ -5,6 +5,7 @@ import graph.DBManager;
 import graph.Page;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -105,21 +106,24 @@ public class Walker implements Runnable
 	private void saveResults(Page p, Map<Category,Double> results)
 	{
 		//Generate an insert query for all the results
-		String query = "GO\nINSERT INTO page_results (pageid, category, score)\n";
+		String query = "INSERT INTO page_results (pageid, category, score)\nVALUES\n";
 		int n_results = results.size();
 		int result_i = 0;
 		Iterator<Entry<Category,Double>> it = results.entrySet().iterator();
 		while (it.hasNext())
 		{
 			Entry<Category,Double> pairs = it.next();
-			query+="SELECT "+p.pageId+", "+pairs.getKey().getName()+", "+pairs.getValue()+"\n";
+			query+="( "+p.pageId+", '"+pairs.getKey().getName()+"', "+pairs.getValue()+")";
 			if (result_i++<n_results-1)
-				query+="UNION ALL\n";
+				query+=",\n";
+			else
+				query+=";";
 		}
-		query+="GO";
 		//Send the query to the database
 		Connection c = DBManager.getConnection();
-		DBManager.execute(c, query);
+		ResultSet rs = DBManager.execute(c, query);
+		//Release the connection back to the pool.
+		DBManager.closeConnection(c, rs);
 	}
 	
 }
