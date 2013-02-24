@@ -67,7 +67,7 @@ public class Page
 	{
 		String query =	"SELECT c.cat_title as cat, c.cat_pages as count " +
 				"FROM filtered_categorylinks as cl, filtered_category as c " +
-				"WHERE cl.cl_from= "+Integer.toString(pageId) + " " +
+				"WHERE cl.cl_from = "+Integer.toString(pageId) + " " +
 				"AND c.cat_hidden=0 AND c.cat_title=cl.cl_to;";
 		Connection c = DBManager.getConnection();
 		ResultSet rs = DBManager.execute(c, query);
@@ -125,7 +125,6 @@ public class Page
 		{
 			 retrieveCategories();
 		}
-		
 		return Categories;
 	}
 }
