@@ -53,7 +53,7 @@ public class QueueFiller implements Runnable
 	 */
 	private Set<Page> queryNextPage()
 	{
-		String query = "SELECT page_id from page_todo limit 10;";
+		String query = "SELECT page_id from page_todo limit 100;";
 		//Get a DB connection
 		Connection c = DBManager.getConnection();
 		ResultSet rs = DBManager.execute(c, query);
@@ -71,27 +71,6 @@ public class QueueFiller implements Runnable
 		//Return null if result set is empty
 		if (pages.isEmpty())
 			return null;
-		
-		//Remove the entries just received from the table
-		StringBuffer delete_query = new StringBuffer();
-		delete_query.append("DELETE FROM page_todo where page_id = ");
-		boolean first = true;
-		for (Page p : pages)
-		{
-			if (first)
-			{
-				first = false;
-				delete_query.append(p.pageId);
-			}
-			else
-			{
-				delete_query.append(" OR page_id = "+p.pageId);
-			}
-		}
-		delete_query.append(";");
-		c = DBManager.getConnection();
-		rs = DBManager.execute(c, delete_query.toString(), true);
-		DBManager.closeConnection(c, rs);
 		
 		return pages;
 	}

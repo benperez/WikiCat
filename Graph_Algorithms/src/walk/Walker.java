@@ -50,6 +50,11 @@ public class Walker implements Runnable
 				Map<Category, Double> results = handle(nextPage);
 				//Save the results
 				saveResults(nextPage, results);
+				//Delete from page_todo
+				String delete_query = "DELETE FROM page_todo where page_id = "+nextPage.pageId+";";
+				Connection c = DBManager.getConnection();
+				ResultSet rs = DBManager.execute(c, delete_query, true);
+				DBManager.closeConnection(c, rs);
 			}
 		} catch(InterruptedException e){ e.printStackTrace(); }
 	}
