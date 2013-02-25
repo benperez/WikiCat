@@ -37,7 +37,7 @@ public class Category
 	private void retrievePages() {
 		String query =	"SELECT p.page_id as id " +
 						"FROM filtered_page AS p, filtered_categorylinks AS cl " +
-						"WHERE cl.cl_from=p.page_id AND cl.cl_to=" + name + ";" ;
+						"WHERE cl.cl_from=p.page_id AND cl.cl_to='" + name + "';" ;
 		Connection c = DBManager.getConnection();
 		ResultSet rs = DBManager.execute(c, query);
 		
