@@ -93,7 +93,7 @@ public class DBManager
 			return rs;
 		} catch (SQLException e)
 		{
-			System.err.println("Error executing query!");
+			System.err.println("Error executing query:"+query);
 			e.printStackTrace();
 		}
 		return null;

@@ -6,6 +6,10 @@ import graph.Page;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -114,13 +118,29 @@ public class Walker implements Runnable
 	{
 		//Generate an insert query for all the results
 		String query = "INSERT INTO page_results (page_id, cat_name, score) VALUES ";
-		int n_results = results.size();
+		int n_results = 10;
+		///Sort the results
+		List<Map.Entry<Category,Double>> sortedByScore = new ArrayList<Map.Entry<Category,Double>>(results.entrySet()); 
+		Collections.sort(sortedByScore, new Comparator<Map.Entry<Category,Double>>() {
+			public int compare(Map.Entry<Category,Double> c1, Map.Entry<Category,Double> c2)
+			{
+				double score1 = c1.getValue();
+				double score2 = c2.getValue();
+				if (score1 > score2)
+					return 1;
+				else if (score1 == score2)
+					return 0;
+				else
+					return -1;
+			}
+		});
+		
+		//Build the query of top N results
 		int result_i = 0;
-		Iterator<Entry<Category,Double>> it = results.entrySet().iterator();
-		while (it.hasNext())
+		for ( int i=0; i<n_results; i++)
 		{
-			Entry<Category,Double> pairs = it.next();
-			query+="( "+p.pageId+", '"+pairs.getKey().getName().replace("'", "''")+"', "+pairs.getValue()+")";
+			Entry<Category,Double> pairs = sortedByScore.get(i);
+			query+="( "+p.pageId+", '"+pairs.getKey().getName()+"', "+pairs.getValue()+")";
 			if (result_i++<n_results-1)
 				query+=",";
 			else
