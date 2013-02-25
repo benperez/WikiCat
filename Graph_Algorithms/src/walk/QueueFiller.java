@@ -74,10 +74,21 @@ public class QueueFiller implements Runnable
 		
 		//Remove the entries just received from the table
 		StringBuffer delete_query = new StringBuffer();
+		delete_query.append("DELETE FROM page_todo where page_id = ");
+		boolean first = true;
 		for (Page p : pages)
 		{
-			delete_query.append("DELETE FROM page_todo where page_id = "+p.pageId+";\n");
+			if (first)
+			{
+				first = false;
+				delete_query.append(p.pageId);
+			}
+			else
+			{
+				delete_query.append(" OR page_id = "+p.pageId);
+			}
 		}
+		delete_query.append(";");
 		c = DBManager.getConnection();
 		rs = DBManager.execute(c, delete_query.toString(), true);
 		DBManager.closeConnection(c, rs);
