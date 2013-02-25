@@ -80,11 +80,16 @@ public class DBManager
 	 * @param query The mySQL query string to execute
 	 * @return A ResultSet object if the query was successful, or null.
 	 */
-	public static ResultSet execute(Connection conn, String query) {
+	public static ResultSet execute(Connection conn, String query, boolean isUpdate)
+	{
 		try
 		{
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
+			ResultSet rs = null;
+			if (isUpdate)
+				stmt.executeUpdate(query);
+			else
+				rs = stmt.executeQuery(query);
 			return rs;
 		} catch (SQLException e)
 		{
@@ -92,6 +97,15 @@ public class DBManager
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * Simple overload for execute to preserve backwards-compatibility.
+	 */
+	public static ResultSet execute(Connection conn, String query)
+	{
+		return execute(conn, query, false);
 	}
 	
 	
