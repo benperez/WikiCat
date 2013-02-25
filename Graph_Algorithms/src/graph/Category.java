@@ -115,4 +115,10 @@ public class Category
 		}
 		return false;
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode();
+	}
 }
