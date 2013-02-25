@@ -13,6 +13,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 
 
 /**
@@ -113,7 +115,7 @@ public class Walker implements Runnable
 		while (it.hasNext())
 		{
 			Entry<Category,Double> pairs = it.next();
-			query+="( "+p.pageId+", '"+pairs.getKey().getName()+"', "+pairs.getValue()+")";
+			query+="( "+p.pageId+", '"+pairs.getKey().getName().replace("'", "''")+"', "+pairs.getValue()+")";
 			if (result_i++<n_results-1)
 				query+=",";
 			else
