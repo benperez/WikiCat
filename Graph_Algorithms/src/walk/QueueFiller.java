@@ -79,7 +79,7 @@ public class QueueFiller implements Runnable
 			delete_query.append("DELETE FROM page_todo where page_id = "+p.pageId+";\n");
 		}
 		c = DBManager.getConnection();
-		rs = DBManager.execute(c, delete_query.toString());
+		rs = DBManager.execute(c, delete_query.toString(), true);
 		DBManager.closeConnection(c, rs);
 		
 		return pages;

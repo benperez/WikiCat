@@ -121,7 +121,7 @@ public class Walker implements Runnable
 		}
 		//Send the query to the database
 		Connection c = DBManager.getConnection();
-		ResultSet rs = DBManager.execute(c, query);
+		ResultSet rs = DBManager.execute(c, query, true);
 		//Release the connection back to the pool.
 		DBManager.closeConnection(c, rs);
 	}
