@@ -22,7 +22,7 @@ public class Category
 	 */
 	public Category(String name, int count)
 	{
-		this.name = name;
+		this.name = name.replace("'", "''");
 		this.article_count = count;
 	}
 	
