@@ -116,9 +116,11 @@ public class Walker implements Runnable
 	 */
 	private void saveResults(Page p, Map<Category,Double> results)
 	{
+		if (results.size()==0)
+			return;
 		//Generate an insert query for all the results
 		String query = "INSERT INTO page_results (page_id, cat_name, score) VALUES ";
-		int n_results = 10;
+		int n_results = 10 > results.size() ? results.size() : 10;
 		///Sort the results
 		List<Map.Entry<Category,Double>> sortedByScore = new ArrayList<Map.Entry<Category,Double>>(results.entrySet()); 
 		Collections.sort(sortedByScore, new Comparator<Map.Entry<Category,Double>>() {
