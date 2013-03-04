@@ -1,0 +1,83 @@
+#container {
+	height: 95%;
+	width: 98%;
+	margin: 1%;
+	margin-bottom: 0;
+}
+
+#sidebar {
+	float: left;
+	height: 100%;
+	width: 300px;
+	border: 1px solid #333;
+	background-color: #eee;
+}
+
+#headers {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border-bottom: 1px solid #333;
+}
+
+#headers * {
+	display: inline-block;
+	width: 49%;
+	padding: 0;
+	margin: 0;
+	vertical-align: middle;
+}
+
+#headers ul li {
+	display: inline-block;
+	width: 30%;
+}
+
+#headers ul li p {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#headers div span {
+	padding-left: 4px;
+}
+
+#suggestions {
+	height: 90%;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	border-bottom: 1px solid #333;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	background-color: #fff;
+}
+
+#suggestions li {
+	border-bottom: 1px solid #ccc;
+	padding: 10px 4px;
+}
+
+#suggestions div {
+	width: 49%;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.label_input {
+	width: 33%;
+}
+
+#submit_btn {
+	margin: 2%;
+	padding: 10px;
+	margin-left: 4%;
+	width: 90%;
+}
+
+#wiki_frame {
+	height: 100%;
+	width: 80%;
+	border: 1px solid #333;
+	border-left: none;
+}
