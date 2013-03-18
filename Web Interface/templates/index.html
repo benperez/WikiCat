@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="style/normalize.css">
-	<link rel="stylesheet" href="style/styles.css">
+	<link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 
@@ -47,10 +47,10 @@
 	
 	
 	<!-- Load scripts at the end to improve initial page load time. -->
-	<script src="lib/jquery.js"></script>
-	<script src="lib/icanhaz.min.js"></script>
+	<script src="{{ url_for('static', filename='lib/jquery.js') }}"></script>
+	<script src="{{ url_for('static', filename='lib/icanhaz.min.js') }}"></script>
 	
-	<script src="index.js"></script>
+	<script src="{{ url_for('static', filename='index.js') }}"></script>
 	
 	
 	<!-- //Retrieve all templates defined in HTML -->
