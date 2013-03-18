@@ -148,7 +148,7 @@ var App = {
 	sendLabelData: function(data) {
 		//Formulate the proper request object and have the callback request a new todo item.
 		var url = '/todo/' + App.current_todo.page_name
-		App.sendRequest(url, 'PUT', App.requestNewSuggestions, null, data);
+		App.sendRequest(url, 'POST', App.requestNewSuggestions, null, data);
 		
 		/*
 		if (DEBUG) {
