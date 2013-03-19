@@ -94,6 +94,15 @@
 #wiki_frame {
 	height: 100%;
 	width: 80%;
+	float: left;
 	border: 1px solid #333;
 	border-left: none;
+}
+
+#wiki_frame iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+	padding: 0;
+	margin: 0;
 }

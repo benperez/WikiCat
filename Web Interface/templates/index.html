@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='style/normalize.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='style/styles.css') }}">
 </head>
 
 
@@ -28,12 +28,16 @@
 			</div>
 		</div>
 		
-		<iframe id="wiki_frame" src="http://www.wikipedia.org/"></iframe>
+		<div id="wiki_frame"> </div>
+		<!--
+		<iframe id="wiki_frame" src="about:blank"></iframe>
+		-->
 		
 	</div>
 	
 	
 	<!-- Define page templates here in HTML -->
+	{% raw %}
 	<script id="category_entry" type="text/html">
 		<li name="{{list_id}}">
 			<div>{{category}}</div>
@@ -44,6 +48,7 @@
 			</div>
 		</li>
 	</script>
+	{% endraw %}
 	
 	
 	<!-- Load scripts at the end to improve initial page load time. -->

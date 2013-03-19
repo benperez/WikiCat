@@ -9,6 +9,7 @@ var App = {
 	submit_btn: null,
 
 	//Application-wide Variables
+	user_url: '',
 	current_todo: {},
 	
 	
@@ -16,6 +17,9 @@ var App = {
 	 * Handles initialization of display elements and initiating the data load.
 	 */
 	init: function() {
+		//Grab the url's userid component
+		App.user_url = window.location.pathname;
+		
 		//Get handles to different UI elements
 		App.wiki_frame = $('#wiki_frame');
 		App.suggestion_list = $('#suggestions');
@@ -38,7 +42,8 @@ var App = {
 	 */
 	requestNewSuggestions: function() {
 		//Set up the appropriate AJAX request
-		App.sendRequest('/todo', 'GET', App.parseNewSuggestions);
+		var url = App.user_url + '/todo'
+		App.sendRequest(url, 'GET', App.parseNewSuggestions);
 	},
 	
 	
@@ -64,7 +69,13 @@ var App = {
 	 */
 	loadTargetPage: function() {
 		try {
-			App.wiki_frame.load('www.en.wikipedia.com/'+current_todo.page_name);
+			//Remove the old iframe from the DOM if there is one
+			App.wiki_frame.html('');
+			//Create a new iframe to insert into the DOM
+			var url = 'http://www.en.wikipedia.com/wiki/' + App.current_todo.page_name;
+			var new_frame = $('<iframe>');
+			new_frame.attr('src', url);
+			App.wiki_frame.append(new_frame);
 		} catch (e) {
 			App.error("Error loading target page!", e);
 		}
@@ -147,7 +158,7 @@ var App = {
 	 */
 	sendLabelData: function(data) {
 		//Formulate the proper request object and have the callback request a new todo item.
-		var url = '/todo/' + App.current_todo.page_name
+		var url = App.user_url + '/todo/' + App.current_todo.page_name
 		App.sendRequest(url, 'POST', App.requestNewSuggestions, null, data);
 		
 		/*
