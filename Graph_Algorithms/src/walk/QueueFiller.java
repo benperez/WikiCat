@@ -53,19 +53,35 @@ public class QueueFiller implements Runnable
 	 */
 	private Set<Page> queryNextPage()
 	{
-		String query = "SELECT page_id from page_todo limit 100;";
+		String query = "SELECT page_id FROM page_todo LIMIT 10;";
 		//Get a DB connection
 		Connection c = DBManager.getConnection();
 		ResultSet rs = DBManager.execute(c, query);
 		//Parse result
 		Set<Page> pages = new HashSet<Page>();
+		//Create a set of cats to delete
+		StringBuffer inSet = new StringBuffer();
+		inSet.append("(");
 		try {
 			while (rs.next())
 			{
 				int p_id = rs.getInt("page_id");
+				inSet.append(p_id+",");
 				pages.add( new Page(p_id));
 			}
 		} catch (SQLException e) { e.printStackTrace(); }
+		//Check for nothing left in the database
+		if (inSet.length() <= 1)
+		{
+			DBManager.closeConnection(c, rs);
+			return null;
+		}
+		//Chop off the last comma
+		inSet.deleteCharAt(inSet.length()-1);
+		inSet.append(")");
+		//Delete from page_todo
+		String delete_query = "DELETE FROM page_todo WHERE page_id IN "+inSet.toString()+";";
+		rs = DBManager.execute(c, delete_query, true);
 		//Release the connection back to the pool.
 		DBManager.closeConnection(c, rs);
 		//Return null if result set is empty

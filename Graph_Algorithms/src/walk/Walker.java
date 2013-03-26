@@ -17,8 +17,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 
 
 /**
@@ -54,11 +52,6 @@ public class Walker implements Runnable
 				Map<Category, Double> results = handle(nextPage);
 				//Save the results
 				saveResults(nextPage, results);
-				//Delete from page_todo
-				String delete_query = "DELETE FROM page_todo where page_id = "+nextPage.pageId+";";
-				Connection c = DBManager.getConnection();
-				ResultSet rs = DBManager.execute(c, delete_query, true);
-				DBManager.closeConnection(c, rs);
 			}
 		} catch(InterruptedException e){ e.printStackTrace(); }
 	}
@@ -72,6 +65,11 @@ public class Walker implements Runnable
 	{
 		//Get all the categories that are currently on this page
 		Set<Category> root_categories = p.getCategories();
+		//Check for if this is a redirect article
+		if (root_categories.contains(new Category("Unprintworthy_redirects", 1)))
+		{
+			return null;
+		}
 		Map<Category, Integer> counts = new HashMap<Category,Integer>();
 		//Try and do at least N_SAMPLES sample per category of the root page
 		for (Category cat : root_categories)
@@ -86,6 +84,8 @@ public class Walker implements Runnable
 				//Add the categories of each sample to the overall category counts
 				for (Category c_p_cat : c_p_categories)
 				{
+					if (c_p_cat.getName().contains("redirect"))
+						continue;
 					if (counts.containsKey(c_p_cat))
 						counts.put(c_p_cat, counts.get(c_p_cat)+1);
 					else
@@ -116,7 +116,8 @@ public class Walker implements Runnable
 	 */
 	private void saveResults(Page p, Map<Category,Double> results)
 	{
-		if (results.size()==0)
+		//Sanity checks
+		if (results == null || results.size()==0)
 			return;
 		//Generate an insert query for all the results
 		String query = "INSERT INTO page_results (page_id, cat_name, score) VALUES ";
