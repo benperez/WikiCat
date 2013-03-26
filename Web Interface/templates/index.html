@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style/normalize.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='style/styles.css') }}">
+</head>
+
+
+<body>
+
+	<div id="container">
+		<div id="sidebar">
+			<div id="list_div">
+				<div id="headers">
+					<div><span>Category<span></div>
+					<ul>
+						<li><p>Yes</p></li>
+						<li><p>No</p></li>
+						<li><p>Admin.</p></li>
+					</ul>
+				</div>
+				
+				<ul id="suggestions">
+				</ul>
+			</div>
+			
+			<div id="submit_div">
+				<button id="submit_btn">Submit</button>
+			</div>
+		</div>
+		
+		<div id="wiki_frame"> </div>
+		<!--
+		<iframe id="wiki_frame" src="about:blank"></iframe>
+		-->
+		
+	</div>
+	
+	
+	<!-- Define page templates here in HTML -->
+	{% raw %}
+	<script id="category_entry" type="text/html">
+		<li name="{{list_id}}">
+			<div>{{category}}</div>
+			<div>
+				<input class="label_input" name="{{list_id}}" type="radio">
+				<input class="label_input" name="{{list_id}}" type="radio">
+				<input class="label_input" name="{{list_id}}" type="radio">
+			</div>
+		</li>
+	</script>
+	{% endraw %}
+	
+	
+	<!-- Load scripts at the end to improve initial page load time. -->
+	<script src="{{ url_for('static', filename='lib/jquery.js') }}"></script>
+	<script src="{{ url_for('static', filename='lib/icanhaz.min.js') }}"></script>
+	
+	<script src="{{ url_for('static', filename='index.js') }}"></script>
+	
+	
+	<!-- //Retrieve all templates defined in HTML -->
+	<script> ich.refresh(); </script>
+	
+</body>
+</html>
