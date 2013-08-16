@@ -1,7 +1,7 @@
 WikiCat
 =======
 
-Wikipedia and Hot Cats
+Wikipedia Category Suggestion
 
 WikiCat is the result of a senior thesis project by Cris Feo and Benjamin Perez and advised by Andrew G. West and Insup Lee.
 
